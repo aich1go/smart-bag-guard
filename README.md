@@ -1,4 +1,4 @@
-# 🛡️ Smart Bag-Guard
+# Tugas IOT - Smart Bag-Guard
 
 **Pengaman Tas & Zipper Saat di Cafe / Perpustakaan**
 *Proyek IoT - Dual Edge Device Android via MQTT Cloud*
