@@ -1,7 +1,12 @@
 # Tugas IOT - Smart Bag-Guard
 
-**Pengaman Tas & Zipper Saat di Cafe / Perpustakaan**
-*Proyek IoT - Dual Edge Device Android via MQTT Cloud*
+**Internet of Things - Kelas D**
+1. Lando Susilo Wibowo          - 24060125130108
+2. Khalila Ramadhani            - 24060125130109
+3. Muhammad Daffa Azmi Dzikraka - 24060125140164
+4. Zhafari Rasyid               - 24060125140209
+   
+*Tugas IOT menggunakan Dual Edge Device Android melalui MQTT Cloud*
 
 ---
 
