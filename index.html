@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Bag-Guard | IoT Security Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Paho MQTT Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>🛡️ Smart Bag-Guard</h1>
+      <p>Pengaman Tas & Zipper Saat di Cafe / Perpustakaan</p>
+    </div>
+    <div class="system-status">
+      <span class="dot" id="statusDot"></span> <span id="connectionStatus">CONNECTING TO CLOUD...</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="notice">
+      <strong>Mode Pengoperasian:</strong> 
+      Buka halaman ini di 2 HP Android. Set HP 1 sebagai <strong>Edge 1</strong> (dalam tas) dan HP 2 sebagai <strong>Edge 2</strong> (dibawa pemilik). Masukkan <strong>PROJECT_ID</strong> yang sama untuk menghubungkan semua perangkat via MQTT Cloud!
+    </section>
+
+    <!-- Project Config & Transmitter Panel -->
+    <section class="card config-panel">
+      <div class="section-heading">
+        <div>
+          <h2>⚙️ Konfigurasi Perangkat (HP / Edge Node)</h2>
+          <p class="sub">Atur ID Proyek dan aktifkan pengiriman sensor dari HP ini.</p>
+        </div>
+      </div>
+      <div class="config-grid">
+        <div>
+          <label><strong>Project ID (Harus sama di semua HP/Laptop):</strong></label>
+          <input type="text" id="projectIdInput" value="smartbag_kelompok_07" class="input-field">
+        </div>
+        <div>
+          <label><strong>Peran HP Ini:</strong></label>
+          <select id="deviceRoleSelect" class="input-field">
+            <option value="dashboard">🖥️ Dashboard / Observer Only</option>
+            <option value="edge1">📱 Edge 1 — HP A (Dalam Tas)</option>
+            <option value="edge2">📱 Edge 2 — HP B (Dibawa Pemilik)</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <button id="toggleSensorBtn">▶️ Mulai Kirim Sensor HP Ini</button>
+        <button id="reconnectBtn" style="background:#486581;">🔄 Connect / Reconnect MQTT</button>
+      </div>
+    </section>
+
+    <!-- Hero Alert Status -->
+    <section class="hero card">
+      <div>
+        <span class="badge" id="fusionBadge">SENSOR FUSION · RULE-BASED</span>
+        <h2 id="alertTitle">MENUNGGU DATA SENSOR...</h2>
+        <p id="alertDescription">
+          Hubungkan Edge 1 dan Edge 2 untuk memulai pemantauan keamanan tas.
+        </p>
+      </div>
+      <div class="alert-icon" id="alertIcon">?</div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Perangkat & Sensor (Real-Time MQTT)</h2>
+      <div class="device-grid">
+        <article class="card device">
+          <div class="device-header">
+            <div>
+              <span class="device-label">EDGE 1</span>
+              <h3>📱 HP A — Di Dalam Tas</h3>
+            </div>
+            <span class="online" id="edge1Status">○ OFFLINE</span>
+          </div>
+
+          <div class="sensor">
+            <div>
+              <strong>💡 Light Sensor</strong>
+              <p>Normalnya ~0 Lux karena berada di dalam tas tertutup.</p>
+            </div>
+            <strong class="sensor-value"><span id="lux">0.0</span> Lux</strong>
+          </div>
+
+          <div class="sensor">
+            <div>
+              <strong>📳 Accelerometer (RMS)</strong>
+              <p>Mendeteksi gerakan atau guncangan tas.</p>
+            </div>
+            <strong class="sensor-value"><span id="bagRms">0.00</span> m/s²</strong>
+          </div>
+        </article>
+
+        <article class="card device">
+          <div class="device-header">
+            <div>
+              <span class="device-label">EDGE 2</span>
+              <h3>📱 HP B — Dibawa Pemilik</h3>
+            </div>
+            <span class="online" id="edge2Status">○ OFFLINE</span>
+          </div>
+
+          <div class="sensor">
+            <div>
+              <strong>📳 Accelerometer (RMS)</strong>
+              <p>Mendeteksi gerakan pemilik.</p>
+            </div>
+            <strong class="sensor-value"><span id="ownerRms">0.00</span> m/s²</strong>
+          </div>
+
+          <div class="sensor">
+            <div>
+              <strong>🌀 Gyroscope (Rotasi)</strong>
+              <p>Mendeteksi langkah dan aktivitas pemilik.</p>
+            </div>
+            <strong class="sensor-value"><span id="gyro">0.00</span> rad/s</strong>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Data Processing di Edge Device</h2>
+      <div class="processing-grid">
+        <article class="card process">
+          <span class="number">01</span>
+          <h3>Lux Delta Detection</h3>
+          <p>Menghitung lonjakan nilai cahaya secara real-time:</p>
+          <div class="formula">ΔLux = |Lux sekarang − Lux sebelumnya|</div>
+          <p class="sub">Jika ΔLux &gt; 15 Lux → Indikasi ritsleting tas dibuka.</p>
+        </article>
+
+        <article class="card process">
+          <span class="number">02</span>
+          <h3>Relative Motion RMS Difference</h3>
+          <p>Membandingkan Root Mean Square (RMS) gerakan HP di tas dengan HP pemilik.</p>
+          <div class="formula">ΔRMS = |RMS Tas − RMS Pemilik|</div>
+          <p class="sub">Selisih besar mengindikasikan tas berpindah tanpa pemilik.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <div>
+          <h2>Sensor Fusion Rule-Based</h2>
+          <p class="sub">Keputusan dibuat dari gabungan data kedua edge device via Cloud MQTT.</p>
+        </div>
+        <button id="simulateBtn" style="background:#627d98;">🎲 Simulasikan Kondisi (Demo)</button>
+      </div>
+
+      <div class="rules">
+        <div class="rule" id="rule1">
+          <span>1</span>
+          <div>
+            <strong>CRITICAL_ALERT</strong>
+            <p>ΔLux &gt; 15 Lux DAN Pemilik Diam/Jauh (RMS &lt; 0.3 m/s²).</p>
+          </div>
+          <b>—</b>
+        </div>
+
+        <div class="rule" id="rule2">
+          <span>2</span>
+          <div>
+            <strong>ALERT</strong>
+            <p>RMS Tas &gt; 1.2 m/s² DAN Pemilik Diam/Jauh (RMS &lt; 0.3 m/s²).</p>
+          </div>
+          <b>—</b>
+        </div>
+
+        <div class="rule" id="rule3">
+          <span>3</span>
+          <div>
+            <strong>NORMAL</strong>
+            <p>RMS Tas &ge; 0.7 m/s² DAN RMS Pemilik &ge; 0.7 m/s² (Sama-sama aktif).</p>
+          </div>
+          <b>—</b>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <div>
+          <h2>☁️ Komunikasi Cloud MQTT / WebSocket</h2>
+          <p>Setiap edge device mengirim telemetry JSON ke MQTT Broker secara real-time.</p>
+        </div>
+        <span class="badge">MQTT / WSS</span>
+      </div>
+
+      <div class="flow">
+        <div>💡📳<br><strong>Sensor HP</strong></div>
+        <span>→</span>
+        <div>📱<br><strong>Edge 1 (Tas)</strong></div>
+        <span>↔</span>
+        <div>📱<br><strong>Edge 2 (Pemilik)</strong></div>
+        <span>→</span>
+        <div>☁️<br><strong>HiveMQ Cloud</strong></div>
+        <span>→</span>
+        <div>🖥️<br><strong>Dashboard</strong></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>Smart Bag-Guard · Proyek IoT · Dual Android Edge Device</footer>
+  <script src="script.js"></script>
+</body>
+</html>
