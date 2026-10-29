@@ -11,8 +11,7 @@
 <body>
   <header>
     <div>
-      <h1>🛡️ Smart Bag-Guard</h1>
-      <p>Pengaman Tas & Zipper Saat di Cafe / Perpustakaan</p>
+      <h1>Smart Bag-Guard</h1>
     </div>
     <div class="system-status">
       <span class="dot" id="statusDot"></span> <span id="connectionStatus">CONNECTING TO CLOUD...</span>
@@ -30,16 +29,16 @@
       <div class="section-heading">
         <div>
           <h2>⚙️ Konfigurasi Perangkat (HP / Edge Node)</h2>
-          <p class="sub">Atur ID Proyek dan aktifkan pengiriman sensor dari HP ini.</p>
+          <p class="sub">Atur ID Proyek dan aktifkan pengiriman sensor dari Gadget ini.</p>
         </div>
       </div>
       <div class="config-grid">
         <div>
-          <label><strong>Project ID (Harus sama di semua HP/Laptop):</strong></label>
-          <input type="text" id="projectIdInput" value="smartbag_kelompok_07" class="input-field">
+          <label><strong>Project ID (Harus sama di semua Gadget (HP atau PC):</strong></label>
+          <input type="text" id="projectIdInput" value="smartbag_kelompok_17" class="input-field">
         </div>
         <div>
-          <label><strong>Peran HP Ini:</strong></label>
+          <label><strong>Peran Gadget Ini:</strong></label>
           <select id="deviceRoleSelect" class="input-field">
             <option value="dashboard">🖥️ Dashboard / Observer Only</option>
             <option value="edge1">📱 Edge 1 — HP A (Dalam Tas)</option>
@@ -48,7 +47,7 @@
         </div>
       </div>
       <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
-        <button id="toggleSensorBtn">▶️ Mulai Kirim Sensor HP Ini</button>
+        <button id="toggleSensorBtn">▶️ Mulai Kirim Sensor Gadget Ini</button>
         <button id="reconnectBtn" style="background:#486581;">🔄 Connect / Reconnect MQTT</button>
       </div>
     </section>
