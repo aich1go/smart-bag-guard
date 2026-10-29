@@ -10,13 +10,13 @@
 
 ---
 
-## 1. Masalah & Ide
+## 1. Permasalahan dan Ide
 Saat meninggalkan tas di meja cafe atau perpustakaan, terdapat risiko ritsleting tas dibuka atau tas dipindahkan oleh orang lain. 
 **Smart Bag-Guard** menggunakan 2 HP Android sebagai *edge device* yang terhubung ke **Cloud MQTT Broker** (HiveMQ Public) untuk memantau keamanan tas secara real-time.
 
 ---
 
-## 2. Arsitektur System
+## 2. Arsitektur Sistem
 - **Edge 1 (HP A - Di dalam Tas):**
   - **Light Sensor:** Mendeteksi lonjakan cahaya ($\Delta Lux$) saat ritsleting tas dibuka.
   - **Accelerometer:** Mendeteksi guncangan/gerakan tas ($RMS_{tas}$).
@@ -29,7 +29,7 @@ Saat meninggalkan tas di meja cafe atau perpustakaan, terdapat risiko ritsleting
 
 ---
 
-## 3. Data Processing & Sensor Fusion
+## 3. Data Processing & Algoritma
 1. **Lux Delta Detection ($\Delta Lux$):** $\Delta Lux = |Lux_{sekarang} - Lux_{sebelumnya}|$
 2. **Relative Motion RMS Difference ($\Delta RMS$):** Membandingkan $RMS_{tas}$ dan $RMS_{pemilik}$.
 
@@ -42,11 +42,7 @@ Saat meninggalkan tas di meja cafe atau perpustakaan, terdapat risiko ritsleting
 
 ## 4. Cara Pengujian & Uji Coba di 2 HP
 
-### Metode 1: Menggunakan GitHub Pages (Sangat Direkomendasikan)
 1. Buka link **GitHub Pages** project ini di browser HP A, HP B, dan Laptop Dashboard.
 2. Di HP A (Saku Tas), pilih mode **Edge 1**, isi `PROJECT_ID`, lalu tekan **Mulai Kirim Sensor**.
 3. Di HP B (Pemilik), pilih mode **Edge 2**, isi `PROJECT_ID` yang sama, lalu tekan **Mulai Kirim Sensor**.
-4. Di Laptop/Browser Dashboard, amati status keamanan terupdate secara otomatis lewat MQTT Cloud!
-
-### Metode 2: Simulasi Demo
-Tekan tombol **Simulasikan Kondisi** di Dashboard jika sedang menguji tanpa sensor fisik HP.
+4. Di Laptop/Browser Dashboard, amati status keamanan terupdate secara otomatis lewat MQTT Cloud
